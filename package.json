@@ -5,15 +5,20 @@
     "preview": "vike preview"
   },
   "dependencies": {
-    "vike": "^0.4.228",
-    "vite-plugin-vercel": "^9.0.5",
+    "@tanstack/vue-query": "^5.74.7",
     "@vite-plugin-vercel/vike": "^9.0.4",
     "@vitejs/plugin-vue": "^5.2.3",
     "@vue/compiler-sfc": "^3.5.13",
     "@vue/server-renderer": "^3.5.13",
+    "openmeteo": "^1.2.0",
     "unplugin-vue-markdown": "^28.3.1",
+    "vike": "^0.4.228",
     "vike-vue": "^0.9.0",
-    "vue": "^3.5.13"
+    "vike-vue-query": "^0.2.0",
+    "vite-plugin-vercel": "^9.0.5",
+    "vue": "^3.5.13",
+    "vue-table": "^0.2.2",
+    "vuetify": "^3.8.2"
   },
   "devDependencies": {
     "typescript": "^5.8.3",

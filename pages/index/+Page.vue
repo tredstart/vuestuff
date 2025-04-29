@@ -1,12 +1,6 @@
 <template>
-  <h1>My Vike app</h1>
-  This page is:
-  <ul>
-    <li>Rendered to HTML.</li>
-    <li>Interactive. <Counter /></li>
-  </ul>
+  <h1>shitty weather app</h1>
 </template>
 
 <script setup lang="ts">
-import Counter from "../../components/Counter.vue";
 </script>

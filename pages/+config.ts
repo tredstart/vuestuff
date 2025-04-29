@@ -10,9 +10,9 @@ export default {
   Layout,
 
   // https://vike.dev/head-tags
-  title: "My Vike App",
+  title: "shitty weather app",
 
-  description: "Demo showcasing Vike",
+  description: "i don't know what i'm doing",
   extends: vikeVue as typeof vikeVue,
   prerender: true,
 } satisfies Config;
