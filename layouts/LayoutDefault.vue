@@ -1,6 +1,5 @@
 <template>
   <div class="layout">
-    <Link href="/weather-page"> Weather </Link>
     <Content><slot /></Content>
   </div>
 </template>
