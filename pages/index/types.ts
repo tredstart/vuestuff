@@ -1,11 +1,4 @@
-export interface PokemonPage {
-    count: number,
-    next: string | null,
-    previous: string | null,
-    results: Pokemon[],
-};
-
-export interface Pokemon {
+export type Pokemon = {
     id: number,
     name: string,
     weight: number,
