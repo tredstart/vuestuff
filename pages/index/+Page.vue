@@ -4,14 +4,7 @@
             Loading...
         </template>
         <template v-else>
-            <!-- <tbody> -->
-            <!--     <tr v-for="row in pokes" :key="row.id"> -->
-            <!--         <td>{{ row.data.id }}</td> -->
-            <!--         <td>{{ row.data.name }}</td> -->
-            <!--         <td>{{ row.data.weight }}</td> -->
-            <!--     </tr> -->
-            <!-- </tbody> -->
-            <v-data-table-virtual :headers="headers" :items="pokes.map((poke) => poke.data)" height="400"
+            <v-data-table-virtual :headers="headers" :items="pokemon.getRowModel().rows" height="400"
                 item-value="name" fixed-header></v-data-table-virtual>
         </template>
     </LayoutDefault>
@@ -24,6 +17,7 @@ import { onServerPrefetch, computed, ref } from 'vue'
 import { useQuery, useQueries } from '@tanstack/vue-query'
 import { Pokemon } from './types.ts'
 import { VueQueryDevtools } from '@tanstack/vue-query-devtools';
+
 import {
     getCoreRowModel,
     useVueTable,
@@ -70,6 +64,8 @@ async function fetchPokemonPage() {
     return pokemon_page.results
 }
 
+
+
 const columnHelper = createColumnHelper<Pokemon>()
 const columns = [
     columnHelper.accessor('id', {
@@ -83,19 +79,19 @@ const columns = [
     }),
 ]
 
-// const pokemon = useVueTable({
-//     get data() {
-//         if (!pokes.length) {
-//             console.log("fuck")
-//             return []
-//         }
-//         return pokes.map((poke) => {
-//             console.log("motherfucker", poke)
-//             return poke.data
-//         })
-//     },
-//     columns,
-//     getCoreRowModel: getCoreRowModel(),
-// })
+const table_data = computed(() => {
+    if (!pokemons.length) return []
+    return pokes.map((poke) => {
+        return poke.data
+    })
+})
+
+const pokemon = useVueTable({
+    data: table_data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+})
+
+console.log(pokemon.getCoreRowModel().rows)
 
 </script>
