@@ -4,8 +4,22 @@
             Loading...
         </template>
         <template v-else>
-            <v-data-table-virtual :headers="headers" :items="pokemon.getRowModel().rows" height="400"
-                item-value="name" fixed-header></v-data-table-virtual>
+            <v-card>
+                <v-table>
+                    <thead>
+                        <tr>
+                            <th v-for="header in headers">{{ header.title }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="row in pokemon.getRowModel().rows">
+                            <td v-for="cell in row.getVisibleCells()" :key="cell.id">
+                                <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </v-table>
+            </v-card>
         </template>
     </LayoutDefault>
     <VueQueryDevtools />
@@ -19,6 +33,7 @@ import { Pokemon } from './types.ts'
 import { VueQueryDevtools } from '@tanstack/vue-query-devtools';
 
 import {
+    FlexRender,
     getCoreRowModel,
     useVueTable,
     createColumnHelper,
@@ -80,11 +95,12 @@ const columns = [
 ]
 
 const table_data = computed(() => {
-    if (!pokemons.length) return []
-    return pokes.map((poke) => {
-        return poke.data
+    if (!pokes.value.length) return []
+    return pokes.value.map((poke) => {
+        return  { id: poke.data.id, name: poke.data.name, weight: poke.data.weight }
     })
 })
+
 
 const pokemon = useVueTable({
     data: table_data,
@@ -92,6 +108,6 @@ const pokemon = useVueTable({
     getCoreRowModel: getCoreRowModel(),
 })
 
-console.log(pokemon.getCoreRowModel().rows)
+console.log(pokemon.getRowModel().rows)
 
 </script>
