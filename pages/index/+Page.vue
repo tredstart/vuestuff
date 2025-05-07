@@ -12,7 +12,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="row in pokemon.getRowModel().rows">
+                        <tr v-for="row in pokemon.getRowModel().rows" @click="handleRowClick(row)">
                             <td v-for="cell in row.getVisibleCells()" :key="cell.id">
                                 <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
                             </td>
@@ -97,7 +97,7 @@ const columns = [
 const table_data = computed(() => {
     if (!pokes.value.length) return []
     return pokes.value.map((poke) => {
-        return  { id: poke.data.id, name: poke.data.name, weight: poke.data.weight }
+        return { id: poke.data.id, name: poke.data.name, weight: poke.data.weight }
     })
 })
 
@@ -108,6 +108,9 @@ const pokemon = useVueTable({
     getCoreRowModel: getCoreRowModel(),
 })
 
-console.log(pokemon.getRowModel().rows)
+function handleRowClick(row) {
+    const id_cell = row.getVisibleCells()[0]
+    window.open(`/pokemon/${id_cell.getValue()}`, '_blank')
+}
 
 </script>
