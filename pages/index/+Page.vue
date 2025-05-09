@@ -109,8 +109,8 @@ const pokemon = useVueTable({
 })
 
 function handleRowClick(row) {
-    const id_cell = row.getVisibleCells()[0]
-    window.open(`/pokemon/${id_cell.getValue()}`, '_blank')
+    const name_cell = row.getVisibleCells()[1]
+    window.open(`/pokemon/${name_cell.getValue()}`, '_blank')
 }
 
 </script>

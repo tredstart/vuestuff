@@ -5,7 +5,7 @@ import Layout from "../layouts/LayoutDefault.vue";
 
 export default {
   Layout,
-  title: "shitty weather app",
+  title: "Pokedeez",
   description: "i don't know what i'm doing",
   extends: [vikeVue, vikeVueQuery],
   prerender: true,
