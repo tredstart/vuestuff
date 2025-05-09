@@ -4,7 +4,9 @@ import * as components from "vuetify/components";
 import * as directives from "vuetify/directives";
 import "@mdi/font/css/materialdesignicons.css";
 import type { PageContext } from "vike/types";
-import { escapeInject } from "vike/server";
+import { renderToString } from "vue/server-renderer";
+import { createSSRApp, h } from "vue";
+import { VueQueryPlugin } from "@tanstack/vue-query";
 
 export { onRenderHtml };
 
@@ -18,8 +20,18 @@ async function onRenderHtml(pageContext: PageContext) {
     },
   });
 
+  const app = createSSRApp({
+    setup() {
+      return () => h(pageContext.Page, { pageContext });
+    },
+  });
+  app.use(vuetify);
+  app.use(VueQueryPlugin);
+
+  const appHtml = await renderToString(app);
+
   return {
-    documentHtml: escapeInject`<!DOCTYPE html>
+    documentHtml: `<!DOCTYPE html>
       <html>
         <head>
           <title>Pokedeez</title>
@@ -27,13 +39,14 @@ async function onRenderHtml(pageContext: PageContext) {
           <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css">
         </head>
         <body>
-          <div id="app"></div>
+          <div id="app">${appHtml}</div>
         </body>
       </html>`,
     pageContext: {
       vuetify,
       Page: pageContext.Page,
-      passToClient: ["vuetify", "Page"],
+      routeParams: pageContext.routeParams,
+      passToClient: ["vuetify", "Page", "routeParams"],
     },
   };
 }
