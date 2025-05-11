@@ -7,6 +7,7 @@ import type { PageContext } from "vike/types";
 import { renderToString } from "vue/server-renderer";
 import { createSSRApp, h } from "vue";
 import { VueQueryPlugin } from "@tanstack/vue-query";
+import { escapeInject, dangerouslySkipEscape } from "vike/server";
 
 export { onRenderHtml };
 
@@ -31,7 +32,7 @@ async function onRenderHtml(pageContext: PageContext) {
   const appHtml = await renderToString(app);
 
   return {
-    documentHtml: `<!DOCTYPE html>
+    documentHtml: escapeInject`<!DOCTYPE html>
       <html>
         <head>
           <title>Pokedeez</title>
@@ -39,7 +40,7 @@ async function onRenderHtml(pageContext: PageContext) {
           <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css">
         </head>
         <body>
-          <div id="app">${appHtml}</div>
+          <div id="app">${dangerouslySkipEscape(appHtml)}</div>
         </body>
       </html>`,
     pageContext: {

@@ -34,8 +34,6 @@ a {
 <style scoped>
 .layout {
     display: flex;
-    max-width: 900px;
-    margin: auto;
 }
 
 .content {

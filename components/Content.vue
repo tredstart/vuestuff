@@ -1,5 +1,5 @@
 <template>
-  <div id="page-container">
+  <div id="page-container" style="min-width: 100vw; min-height: 100vh; display: flex; flex-direction: column;">
     <div id="page-content" style="padding: 20px; padding-bottom: 50px; min-height: 100vh">
       <slot />
     </div>

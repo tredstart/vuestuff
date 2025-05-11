@@ -31,6 +31,7 @@ import { onServerPrefetch, computed, ref } from 'vue'
 import { useQuery, useQueries } from '@tanstack/vue-query'
 import { Pokemon } from './types.ts'
 import { VueQueryDevtools } from '@tanstack/vue-query-devtools';
+import LayoutDefault  from "../../layouts/LayoutDefault.vue";
 
 import {
     FlexRender,
