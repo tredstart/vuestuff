@@ -1,9 +1,12 @@
 <template>
     <template v-if="!pokemon">
-        <div>Loading...</div>
+        <v-container>
+            <v-skeleton-loader class="mx-auto" elevation="12"
+                type="card, text, chip, chip, text@2, table-tbody"></v-skeleton-loader>
+        </v-container>
     </template>
     <template v-else>
-        <v-container class="pokedex-frame">
+        <v-container>
             <v-card elevation="10" rounded="lg" class="pa-4">
                 <v-img :src="pokemon.sprite" height="150" />
                 <v-card-title>{{ pokemon.name }}</v-card-title>

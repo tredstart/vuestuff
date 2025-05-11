@@ -1,25 +1,31 @@
 <template>
     <LayoutDefault>
         <template v-if="!pokes.length">
-            Loading...
+            <v-container>
+                <v-card class="pa-4">
+                    <v-skeleton-loader type="table-heading, table-row@5"></v-skeleton-loader>
+                </v-card>
+            </v-container>
         </template>
         <template v-else>
-            <v-card>
-                <v-table>
-                    <thead>
-                        <tr>
-                            <th v-for="header in headers">{{ header.title }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="row in pokemon.getRowModel().rows" @click="handleRowClick(row)">
-                            <td v-for="cell in row.getVisibleCells()" :key="cell.id">
-                                <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
-                            </td>
-                        </tr>
-                    </tbody>
-                </v-table>
-            </v-card>
+            <v-container>
+                <v-card>
+                    <v-table>
+                        <thead>
+                            <tr>
+                                <th v-for="header in headers">{{ header.title }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="row in pokemon.getRowModel().rows" @click="handleRowClick(row)">
+                                <td v-for="cell in row.getVisibleCells()" :key="cell.id">
+                                    <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </v-table>
+                </v-card>
+            </v-container>
         </template>
     </LayoutDefault>
     <VueQueryDevtools />
@@ -31,7 +37,7 @@ import { onServerPrefetch, computed, ref } from 'vue'
 import { useQuery, useQueries } from '@tanstack/vue-query'
 import { Pokemon } from './types.ts'
 import { VueQueryDevtools } from '@tanstack/vue-query-devtools';
-import LayoutDefault  from "../../layouts/LayoutDefault.vue";
+import LayoutDefault from "../../layouts/LayoutDefault.vue";
 
 import {
     FlexRender,
