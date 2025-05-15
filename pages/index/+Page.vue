@@ -1,9 +1,9 @@
 <template>
     <LayoutDefault>
-        <template v-if="!pokes.length">
+        <template v-if="!pokes?.value?.length || pokes.value.some(poke => poke.isLoading)">
             <v-container>
                 <v-card class="pa-4">
-                    <v-skeleton-loader type="table-heading, table-row@5"></v-skeleton-loader>
+                    <v-skeleton-loader type="table-heading, table-row@151"></v-skeleton-loader>
                 </v-card>
             </v-container>
         </template>
@@ -33,18 +33,25 @@
 
 <script setup lang="ts">
 
-import { onServerPrefetch, computed, ref } from 'vue'
-import { useQuery, useQueries } from '@tanstack/vue-query'
-import { Pokemon } from './types.ts'
+import { computed } from 'vue';
+import { useQuery, useQueries } from '@tanstack/vue-query';
+import { Pokemon, TablePokemon } from './types';
 import { VueQueryDevtools } from '@tanstack/vue-query-devtools';
 import LayoutDefault from "../../layouts/LayoutDefault.vue";
+
 
 import {
     FlexRender,
     getCoreRowModel,
     useVueTable,
     createColumnHelper,
-} from '@tanstack/vue-table'
+} from '@tanstack/vue-table';
+
+const props = defineProps<{
+    pageContext?: {
+        routeParams?: Record<string, string>
+    }
+}>();
 
 const page = 'https://pokeapi.co/api/v2/pokemon?limit=151'
 
@@ -54,31 +61,6 @@ const headers = [
     { title: 'Weight', align: 'end', key: 'weight' },
 ]
 
-const { data: pokemons } = useQuery({
-    queryKey: ['pokemon_page'],
-    queryFn: fetchPokemonPage,
-    select: (pokemon_page) => pokemon_page.map((pokemon) => pokemon.url),
-})
-
-const queries = computed(() => {
-    if (!pokemons.value) return []
-    return pokemons.value.length
-        ? pokemons.value.map((url) => {
-            return {
-                queryKey: ['pokemon', url],
-                queryFn: async () => {
-                    const result = await fetch(url)
-                    const pokemon = await result.json()
-                    return pokemon
-                },
-            }
-        })
-        : []
-})
-
-const pokes = useQueries({
-    queries,
-})
 
 async function fetchPokemonPage() {
     const response = await fetch(page)
@@ -86,9 +68,15 @@ async function fetchPokemonPage() {
     return pokemon_page.results
 }
 
+const pokemonURLs = useQuery({
+    queryKey: ['pokemon_page'],
+    queryFn: fetchPokemonPage,
+    select: (pokemon_page) => pokemon_page.map((pokemon: Pokemon) => pokemon.url) as string[],
+})
 
 
-const columnHelper = createColumnHelper<Pokemon>()
+const columnHelper = createColumnHelper<TablePokemon>()
+
 const columns = [
     columnHelper.accessor('id', {
         cell: info => info.getValue(),
@@ -101,13 +89,38 @@ const columns = [
     }),
 ]
 
-const table_data = computed(() => {
-    if (!pokes.value.length) return []
-    return pokes.value.map((poke) => {
-        return { id: poke.data.id, name: poke.data.name, weight: poke.data.weight }
+const pokes = computed(() => {
+    return useQueries({
+        queries: computed(() => {
+            if (!pokemonURLs.data.value) return []
+            return pokemonURLs.data.value.length
+                ? pokemonURLs.data.value.map((url: string) => {
+                    return {
+                        queryKey: ['pokemon', url],
+                        queryFn: async () => {
+                            const result = await fetch(url)
+                            const pokemon: Pokemon = await result.json()
+                            return pokemon
+                        },
+                    }
+                })
+                : []
+        })
     })
 })
 
+const table_data = computed(() => {
+    if (!pokes.value?.value.length) return []
+
+    return pokes.value.value
+        .filter(poke => poke.isSuccess && poke.data)
+        .map(poke => ({
+            id: poke.data?.id,
+            name: poke.data?.name,
+            weight: poke.data?.weight,
+            url: poke.data?.url
+        }))
+})
 
 const pokemon = useVueTable({
     data: table_data,
@@ -115,9 +128,10 @@ const pokemon = useVueTable({
     getCoreRowModel: getCoreRowModel(),
 })
 
+
 function handleRowClick(row) {
     const name_cell = row.getVisibleCells()[1]
-    window.open(`/pokemon/${name_cell.getValue()}`, '_blank')
+    window.location.href = (`/pokemon/${name_cell.getValue()}`)
 }
 
 </script>
